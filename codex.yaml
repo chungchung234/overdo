@@ -1,20 +1,135 @@
 version: 1
-branches:
+
+agents:
   main:
-    type: protected
-    description: "배포 가능한 안정 코드를 유지하는 브랜치입니다."
+    description: >
+      실제 서비스 배포 브랜치입니다. 릴리즈 또는 핫픽스 병합만 허용됩니다.
+    triggers:
+      on_merge:
+        - run: deploy prod
+        - run: tag version
+        - notify: all
+    conditions:
+      must_pass_checks: true
+      require_reviews: true
+
   develop:
-    type: default
-    description: "기능 개발이 이루어지는 기본 브랜치로 feature 브랜치의 병합 대상입니다."
-  feature:
-    pattern: "feature/*"
-    merge_into: develop
-    description: "기능 단위로 생성되는 브랜치입니다."
-  release:
-    pattern: "release/*"
-    merge_into: [main, develop]
-    description: "배포 준비 과정에서 사용하는 브랜치입니다."
-  hotfix:
-    pattern: "hotfix/*"
-    merge_into: [main, develop]
-    description: "배포 후 긴급 수정이 필요한 경우 사용하는 브랜치입니다."
+    description: >
+      모든 기능 개발이 모이는 통합 개발 브랜치입니다.
+    triggers:
+      on_merge:
+        - run: run tests
+        - run: deploy stage
+        - notify: dev-team
+    conditions:
+      must_pass_checks: true
+      require_reviews: true
+
+  "feature/*":
+    description: >
+      기능 단위 브랜치입니다. 완료 시 develop 브랜치로 PR을 자동 생성합니다.
+    triggers:
+      on_push:
+        - run: lint
+        - run: build
+        - run: unit tests
+      on_completion:
+        - run: create pull request to develop
+    actions:
+      create pull request to develop:
+        type: pull_request
+        target_branch: develop
+        title: "[AUTO] Feature 병합 요청: $BRANCH"
+        reviewers:
+          - chungchung234
+        labels:
+          - feature
+
+  "release/*":
+    description: >
+      배포 준비 브랜치입니다. 버그 수정 및 문서 반영 후 main과 develop으로 PR이 자동 생성됩니다.
+    triggers:
+      on_create:
+        - notify: qa-team
+      on_completion:
+        - run: generate release notes
+        - run: create pull request to main
+        - run: create pull request to develop
+    actions:
+      create pull request to main:
+        type: pull_request
+        target_branch: main
+        title: "[AUTO] Release 병합 요청: $BRANCH → main"
+        reviewers:
+          - chungchung234
+        labels:
+          - release
+
+      create pull request to develop:
+        type: pull_request
+        target_branch: develop
+        title: "[AUTO] Release 병합 요청: $BRANCH → develop"
+        reviewers:
+          - chungchung234
+        labels:
+          - sync
+
+  "hotfix/*":
+    description: >
+      긴급 수정 브랜치입니다. 병합 시 main과 develop에 PR 자동 생성 + 프로덕션 재배포
+    triggers:
+      on_create:
+        - notify: all
+      on_completion:
+        - run: create pull request to main
+        - run: create pull request to develop
+        - run: deploy prod
+        - run: create postmortem task
+    actions:
+      create pull request to main:
+        type: pull_request
+        target_branch: main
+        title: "[HOTFIX] 긴급 수정 병합: $BRANCH → main"
+        reviewers:
+          - chungchung234
+        labels:
+          - hotfix
+
+      create pull request to develop:
+        type: pull_request
+        target_branch: develop
+        title: "[HOTFIX] 동기화 병합: $BRANCH → develop"
+        reviewers:
+          - chungchung234
+        labels:
+          - sync
+
+# notifications:
+#   channels:
+#     dev-team:
+#       type: slack
+#       target: "#dev"
+#     qa-team:
+#       type: slack
+#       target: "#qa"
+#     all:
+#       type: slack
+#       target: "#general"
+
+tasks:
+  deploy prod:
+    script: ./scripts/deploy-prod.sh
+  deploy stage:
+    script: ./scripts/deploy-stage.sh
+  run tests:
+    script: ./gradlew test
+  build:
+    script: ./gradlew build
+  lint:
+    script: ./gradlew check
+  tag version:
+    script: ./scripts/auto-tag.sh
+  generate release notes:
+    script: ./scripts/release-notes.sh
+  create postmortem task:
+    script: ./scripts/create-postmortem.sh
