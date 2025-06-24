@@ -7,8 +7,8 @@ Docker Compose file for MongoDB.
 ## Branch strategy
 
 The project follows the branch workflow defined in `codex.yml`.
-Development is carried out on the `work` branch. Changes are
-merged into `master` when they are ready for release.
+Development is carried out on the `develop` branch. Changes are
+merged into `main` when they are ready for release.
 
 ## Building and testing
 
@@ -21,5 +21,11 @@ Use the Gradle wrapper to build and run tests:
 
 ## Scripts
 
-There is currently no `scripts/` directory in this repository.
-This section can describe script usage once scripts are added.
+The `scripts/` directory provides utilities for release tagging,
+deployment and postmortem notes. It contains the following helper
+scripts:
+
+* `auto-tag.sh`
+* `create-postmortem.sh`
+* `deploy-prod.sh`
+* `release-notes.sh`
