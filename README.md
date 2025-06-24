@@ -23,9 +23,12 @@ Use the Gradle wrapper to build and run tests:
 
 The `scripts/` directory provides utilities for release tagging,
 deployment and postmortem notes. It contains the following helper
-scripts:
+scripts and is structured as follows:
 
-* `auto-tag.sh`
-* `create-postmortem.sh`
-* `deploy-prod.sh`
-* `release-notes.sh`
+```text
+scripts/
+├── auto-tag.sh
+├── create-postmortem.sh
+├── deploy-prod.sh
+└── release-notes.sh
+```
