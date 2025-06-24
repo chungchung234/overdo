@@ -6,7 +6,7 @@ Docker Compose file for MongoDB.
 
 ## Branch strategy
 
-The project follows the branch workflow defined in `codex.yml`.
+The project follows the branch workflow defined in `codex.yaml`.
 Development is carried out on the `develop` branch. Changes are
 merged into `main` when they are ready for release.
 
