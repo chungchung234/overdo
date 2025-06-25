@@ -2,16 +2,6 @@
 # Terraform MVP 인프라 구성 (EKS + VPC + ECR + Redis + RDS - MSSQL)
 ########################################
 
-terraform {
-  required_version = ">= 1.3.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
 provider "aws" {
   region = "ap-northeast-2"
 }
@@ -26,14 +16,14 @@ module "vpc" {
   name = "overdo-vpc"
   cidr = "10.0.0.0/16"
 
-  azs            = ["ap-northeast-2a", "ap-northeast-2c"]
+  azs             = ["ap-northeast-2a", "ap-northeast-2c"]
   public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
 
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-  enable_nat_gateway   = false
-  single_nat_gateway   = false
-  create_igw           = true
+  enable_dns_support     = true
+  enable_dns_hostnames   = true
+  enable_nat_gateway     = false
+  single_nat_gateway     = false
+  create_igw             = true
 }
 
 ########################################
@@ -81,6 +71,27 @@ resource "aws_elasticache_cluster" "redis" {
   parameter_group_name = "default.redis7"
   subnet_group_name    = aws_elasticache_subnet_group.redis.name
   port                 = 6379
+  security_group_ids   = [aws_security_group.redis.id]
+}
+
+resource "aws_security_group" "redis" {
+  name        = "redis-sg"
+  description = "Allow Redis access"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 ########################################
@@ -91,20 +102,40 @@ resource "aws_db_subnet_group" "rds" {
   subnet_ids = module.vpc.public_subnets
 }
 
+resource "aws_security_group" "rds" {
+  name        = "rds-sg"
+  description = "Allow MSSQL access"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 1433
+    to_port     = 1433
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_db_instance" "overdo" {
-  identifier             = "overdo-mssql"
-  engine                 = "sqlserver-ex"
-  engine_version         = "15.00.4073.23.v1"
-  instance_class         = "db.t3.micro"
-  allocated_storage      = 20
-  username               = "adminuser"
-  password               = "OverdoMssql123!" # 운영 시 Secrets Manager 사용 권장
-  publicly_accessible    = true
-  skip_final_snapshot    = true
-  db_subnet_group_name   = aws_db_subnet_group.rds.name
-  vpc_security_group_ids = [module.vpc.default_security_group_id]
-  port                   = 1433
-  license_model          = "license-included"
+  identifier              = "overdo-mssql"
+  engine                  = "sqlserver-ex"
+  engine_version          = "15.00.4073.23.v1"
+  instance_class          = "db.t3.micro"
+  allocated_storage       = 20
+  username                = "adminuser"
+  password                = "OverdoMssql123!" # 운영 시 Secrets Manager 사용 권장
+  publicly_accessible     = true
+  skip_final_snapshot     = true
+  db_subnet_group_name    = aws_db_subnet_group.rds.name
+  vpc_security_group_ids  = [aws_security_group.rds.id]
+  port                    = 1433
+  license_model           = "license-included"
 }
 
 ########################################
