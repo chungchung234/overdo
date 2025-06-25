@@ -16,14 +16,14 @@ module "vpc" {
   name = "overdo-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = ["ap-northeast-2a", "ap-northeast-2c"]
+  azs            = ["ap-northeast-2a", "ap-northeast-2c"]
   public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
 
-  enable_dns_support     = true
-  enable_dns_hostnames   = true
-  enable_nat_gateway     = false
-  single_nat_gateway     = false
-  create_igw             = true
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  enable_nat_gateway   = false
+  single_nat_gateway   = false
+  create_igw           = true
 }
 
 ########################################
@@ -82,19 +82,19 @@ resource "aws_db_subnet_group" "rds" {
 }
 
 resource "aws_db_instance" "overdo" {
-  identifier              = "overdo-mssql"
-  engine                  = "sqlserver-ex"
-  engine_version          = "15.00.4073.23.v1"
-  instance_class          = "db.t3.micro"
-  allocated_storage       = 20
-  username                = "adminuser"
-  password                = "OverdoMssql123!" # 운영 시 Secrets Manager 사용 권장
-  publicly_accessible     = true
-  skip_final_snapshot     = true
-  db_subnet_group_name    = aws_db_subnet_group.rds.name
-  vpc_security_group_ids  = [module.vpc.default_security_group_id]
-  port                    = 1433
-  license_model           = "license-included"
+  identifier             = "overdo-mssql"
+  engine                 = "sqlserver-ex"
+  engine_version         = "15.00.4073.23.v1"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 20
+  username               = "adminuser"
+  password               = "OverdoMssql123!" # 운영 시 Secrets Manager 사용 권장
+  publicly_accessible    = true
+  skip_final_snapshot    = true
+  db_subnet_group_name   = aws_db_subnet_group.rds.name
+  vpc_security_group_ids = [module.vpc.default_security_group_id]
+  port                   = 1433
+  license_model          = "license-included"
 }
 
 ########################################
