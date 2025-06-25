@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Usage: ./deploy-prod.sh
-# Deploy dev branch directly to main and production.
+# Deploy develop branch directly to main and production.
 
 set -e
 
 # Ensure we have the latest code
-git fetch origin dev main
+git fetch origin develop main
 
-# Merge dev into main
+# Merge develop into main
 git checkout main
-git merge --no-ff origin/dev -m "Merge dev into main for deployment"
+git merge --no-ff origin/develop -m "Merge develop into main for deployment"
 
 # Push updated main
 git push origin main

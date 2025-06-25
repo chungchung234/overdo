@@ -19,7 +19,6 @@ agents:
     triggers:
       on_merge:
         - run: run tests
-        - run: deploy stage
         - notify: dev-team
     conditions:
       must_pass_checks: true
@@ -119,8 +118,6 @@ agents:
 tasks:
   deploy prod:
     script: ./scripts/deploy-prod.sh
-  deploy stage:
-    script: ./scripts/deploy-stage.sh
   run tests:
     script: ./gradlew test
   build:
