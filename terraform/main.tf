@@ -2,6 +2,16 @@
 # Terraform MVP 인프라 구성 (EKS + VPC + ECR + Redis + RDS - MSSQL)
 ########################################
 
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "ap-northeast-2"
 }
