@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Usage: ./deploy-prod.sh
-# Deploy develop branch directly to main and production.
+# Deploy the develop branch directly to main and production.
 
 set -e
 
