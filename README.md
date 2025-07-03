@@ -4,6 +4,8 @@ Overdo is a minimal Spring Boot application. The project structure
 is typical for a Gradle-based Java project and includes a
 Docker Compose file for MongoDB.
 
+It now includes a simple JPA-based Task API under `/tasks`.
+
 ## Branch strategy
 
 The project follows the branch workflow defined in `codex.yaml`.
