@@ -36,7 +36,12 @@ scripts/
 └── release-notes.sh
 ```
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ## Codex automation
 
 For commit and branch guidelines see [AGENTS.md](AGENTS.md).
+
 
