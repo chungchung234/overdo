@@ -21,6 +21,13 @@ This repository uses Codex automation.
   - style: 코드 포맷 등 비기능적 변경
   - refactor: 코드 리팩토링
   - test: 테스트 추가 또는 수정
-  - chore: 기타 변경 사항
+- chore: 기타 변경 사항
 - PR 제목도 동일한 규칙을 따릅니다.
+
+커밋 메시지 규칙을 자동으로 검사하는 Git 훅이 `githooks/commit-msg`에 포함되어 있습니다. 아래 명령으로 활성화하세요.
+
+```bash
+git config core.hooksPath githooks
+```
+
 

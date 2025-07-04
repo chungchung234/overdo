@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+msg_file="$1"
+first_line=$(head -n1 "$msg_file")
+
+# Check for Korean characters
+if ! echo "$first_line" | grep -qP '[\x{AC00}-\x{D7A3}]'; then
+  echo "커밋 메시지는 한국어를 포함해야 합니다." >&2
+  exit 1
+fi
+
+# Check length of first line
+if [ "${#first_line}" -gt 50 ]; then
+  echo "커밋 메시지 첫 줄은 50자 이하여야 합니다." >&2
+  exit 1
+fi
+
+# Check Conventional Commits format
+if ! echo "$first_line" | grep -Eq '^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+'; then
+  echo "Conventional Commits 형식이 아닙니다." >&2
+  exit 1
+fi
+
+exit 0
