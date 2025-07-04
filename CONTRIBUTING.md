@@ -22,4 +22,4 @@ feat: 사용자 로그인 기능 추가
 git config core.hooksPath githooks
 ```
 
-자세한 내용은 `Agents.md`를 참고하세요.
+자세한 내용은 `AGENTS.md`를 참고하세요.

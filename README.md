@@ -32,3 +32,7 @@ scripts/
 ├── deploy-prod.sh
 └── release-notes.sh
 ```
+
+## Codex automation
+
+For commit and branch guidelines see [AGENTS.md](AGENTS.md).
