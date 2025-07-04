@@ -9,8 +9,7 @@ It now includes a simple JPA-based Task API under `/tasks`.
 ## Branch strategy
 
 The project follows the branch workflow defined in `codex.yaml`.
-Development is carried out on the `develop` branch. Changes are
-merged into `main` when they are ready for release.
+At the moment, all development happens directly on the `main` branch.
 
 ## Building and testing
 

@@ -25,7 +25,6 @@ This repository uses Codex automation.
 - PR 제목도 동일한 규칙을 따릅니다.
 
 커밋 메시지 규칙을 자동으로 검사하는 Git 훅이 `githooks/commit-msg`에 포함되어 있습니다. 아래 명령으로 활성화하세요.
-
 ```bash
 git config core.hooksPath githooks
 ```

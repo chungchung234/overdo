@@ -39,4 +39,12 @@ class TaskControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].title").value("Test Task"));
     }
+
+    @Test
+    void getMissingTaskReturns404() throws Exception {
+        mockMvc.perform(get("/tasks/9999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("Task not found"));
+    }
 }

@@ -43,3 +43,16 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def dockerAvailable = true
+try {
+    exec { commandLine 'docker', '--version' }
+} catch(Exception ignored) {
+    dockerAvailable = false
+}
+
+tasks.named('bootRun') {
+    if (!dockerAvailable) {
+        systemProperty 'spring.docker.compose.enabled', 'false'
+    }
+}
