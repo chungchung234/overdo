@@ -19,6 +19,8 @@ Use the Gradle wrapper to build and run tests:
 ./gradlew test    # run tests only
 ```
 
+Requires JDK 21 or higher.
+
 ## Scripts
 
 The `scripts/` directory provides utilities for release tagging,
@@ -36,3 +38,4 @@ scripts/
 ## Codex automation
 
 For commit and branch guidelines see [AGENTS.md](AGENTS.md).
+
